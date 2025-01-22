@@ -13,19 +13,6 @@ import Footer from './components/Footer';
 import TodoError from './components/TodoError';
 // #endregion
 
-// #region filter todos function
-function getFilteredTodos(todos: Todo[], filterOption: FilterOptions) {
-  switch (filterOption) {
-    case FilterOptions.ALL:
-      return todos;
-    case FilterOptions.ACTIVE:
-      return todos.filter(todo => !todo.completed);
-    case FilterOptions.COMPLETED:
-      return todos.filter(todo => todo.completed);
-  }
-}
-// #endregion
-
 export const App: React.FC = () => {
   // #region hooks
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -47,7 +34,18 @@ export const App: React.FC = () => {
   }, []);
   // #endregion
 
-  const filteredTodos = getFilteredTodos(todos, filterOption);
+  // #region filtered todos
+  const filteredTodos = todos.filter(todo => {
+    switch (filterOption) {
+      case FilterOptions.ACTIVE:
+        return !todo.completed;
+      case FilterOptions.COMPLETED:
+        return todo.completed;
+      default:
+        return true;
+    }
+  });
+  // #endregion
 
   // #region event handlers - add & delete
   function onAdd({ title, userId, completed }: OmitTodo) {
