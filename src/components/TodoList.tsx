@@ -1,4 +1,5 @@
 // #region imports
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { Todo } from '../types/Todo';
 import TodoItem from './TodoItem';
 // #endregion
@@ -22,16 +23,23 @@ export default function TodoList({
 }: Props) {
   return (
     <section className="todoapp__main" data-cy="TodoList">
-      {filteredTodos.map(todo => (
-        <TodoItem
-          key={todo.id}
-          todo={todo}
-          onDelete={onDelete}
-          isLoading={loadingTodoIds.includes(todo.id)}
-        />
-      ))}
+      <TransitionGroup>
+        {filteredTodos.map(todo => (
+          <CSSTransition key={todo.id} timeout={300} classNames="item">
+            <TodoItem
+              todo={todo}
+              onDelete={onDelete}
+              isLoading={loadingTodoIds.includes(todo.id)}
+            />
+          </CSSTransition>
+        ))}
 
-      {tempTodo && <TodoItem todo={tempTodo} isLoading={isLoading} />}
+        {tempTodo && (
+          <CSSTransition key={0} timeout={300} classNames="temp-item">
+            <TodoItem todo={tempTodo} isLoading={isLoading} />
+          </CSSTransition>
+        )}
+      </TransitionGroup>
     </section>
   );
 }
