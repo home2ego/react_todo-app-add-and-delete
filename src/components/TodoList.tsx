@@ -1,43 +1,37 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-import cn from 'classnames';
+// #region imports
 import { Todo } from '../types/Todo';
+import TodoItem from './TodoItem';
+// #endregion
 
+// #region type Props
 type Props = {
   filteredTodos: Todo[];
+  tempTodo: Todo | null;
+  onDelete: (todoId: number[]) => void;
+  isLoading: boolean;
+  loadingTodoIds: number[];
 };
+// #endregion
 
-export default function TodoList({ filteredTodos }: Props) {
+export default function TodoList({
+  filteredTodos,
+  onDelete,
+  tempTodo,
+  isLoading,
+  loadingTodoIds,
+}: Props) {
   return (
     <section className="todoapp__main" data-cy="TodoList">
       {filteredTodos.map(todo => (
-        <div
+        <TodoItem
           key={todo.id}
-          data-cy="Todo"
-          className={cn('todo', { completed: todo.completed })}
-        >
-          <label className="todo__status-label">
-            <input
-              data-cy="TodoStatus"
-              type="checkbox"
-              className="todo__status"
-              defaultChecked={todo.completed}
-            />
-          </label>
-
-          <span data-cy="TodoTitle" className="todo__title">
-            {todo.title}
-          </span>
-          <button type="button" className="todo__remove" data-cy="TodoDelete">
-            ×
-          </button>
-
-          <div data-cy="TodoLoader" className="modal overlay">
-            <div className="modal-background has-background-white-ter" />
-            <div className="loader" />
-          </div>
-        </div>
+          todo={todo}
+          onDelete={onDelete}
+          isLoading={loadingTodoIds.includes(todo.id)}
+        />
       ))}
+
+      {tempTodo && <TodoItem todo={tempTodo} isLoading={isLoading} />}
     </section>
   );
 }
